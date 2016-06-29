@@ -25,7 +25,7 @@ e.g. /path/to/lua octopus.lua
 The server runs by default on port 80 and can be accessed in
 a web browser with http://localhost
 
-Files served by the server should be placed in folder /www
+Files served by the server should be placed in folder docroot
 
 
 ## Stop
