@@ -16,11 +16,11 @@ written in the Lua programming language, compatible with Lua 5.1.
 
 1. Open up a shell prompt
 2. Navigate to directory containing octopus.lua
-3. Run "webs" script
+3. Run: $ lua5.1 octopus.lua
 
 Make sure that the Lua intepreter is in your PATH
 or you will have to type the full path to the Lua interpeter
-e.g. /path/to/lua octopus.lua
+e.g. /path/to/lua5.1 octopus.lua
 
 The server runs by default on port 80 and can be accessed in
 a web browser with http://localhost
