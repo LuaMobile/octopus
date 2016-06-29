@@ -100,7 +100,7 @@ function serve(request)
     -- files differently to plain text such as Windows
     flags = "rb"
   end
-  served = io.open("www/" .. file, flags)
+  served = io.open("docroot/" .. file, flags)
   if served ~= nil then
     local content = served:read("*all")
     client:send(content)
