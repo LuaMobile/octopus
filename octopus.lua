@@ -43,6 +43,7 @@ function main(arg1)
 
   server:close() -- close server
 end
+
 -- wait for and receive client requests
 function waitReceive()
   -- loop while waiting for a client request
@@ -67,6 +68,7 @@ function waitReceive()
     end
   end
 end
+
 -- serve requested content
 function serve(request)
   -- resolve requested file from client request
@@ -112,11 +114,13 @@ function serve(request)
   -- done with client, close request
   client:close()
 end
+
 -- display error message and server information
 function err(message)
   client:send(message)
   -- ...
 end
+
 -- invoke program starting point:
 -- parameter is command-line argument for port number
 main(arg[1])
