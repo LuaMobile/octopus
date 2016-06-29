@@ -1,3 +1,3 @@
-@rem Run the ladle web server
+@rem Run the octopus web server
 @rem Usage: webs %port
-@lua ladle.lua %1
+@lua octopus.lua %1

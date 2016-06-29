@@ -1,8 +1,6 @@
 -----------------------------------------------------
--- Ladle web server
+-- Octopus web server
 -- Version 0.1.1
--- Copyright (c) 2008 Samuel Saint-Pettersen
--- Released under the MIT License
 -----------------------------------------------------
 
 -- load required modules
@@ -25,7 +23,7 @@ function main(arg1)
     port = arg1 -- set first argument as port
 
     -- display initial program information
-    print [[Ladle web server v0.1.1
+    print [[Octopus web server v0.1.1
 Copyright (c) 2008 Samuel Saint-Pettersen]]
 
     -- if no port is specified, use port 80
@@ -57,7 +55,7 @@ function waitReceive()
         if not err then
             -- if request is kill (via telnet), stop the server
             if request == "kill" then
-                client:send("Ladle has stopped\n")
+                client:send("Octopus has stopped\n")
                 print("Stopped")
                 break
             else
@@ -82,7 +80,7 @@ function serve(request)
 
     -- reply with a response, which includes relevant mime type
     if mime ~= nil then
-        client:send("HTTP/1.1 200/OK\r\nServer: Ladle\r\n")
+        client:send("HTTP/1.1 200/OK\r\nServer: Octopus\r\n")
         client:send("Content-Type:" .. mime .. "\r\n\r\n")
     end
 
@@ -115,7 +113,7 @@ end
 -- display error message and server information
 function err(message)
     client:send(message)
-	-- ...
+  -- ...
 end
 -- invoke program starting point:
 -- parameter is command-line argument for port number
