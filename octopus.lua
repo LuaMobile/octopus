@@ -23,8 +23,7 @@ function main(arg1)
     port = arg1 -- set first argument as port
 
     -- display initial program information
-    print [[Octopus web server v0.1.1
-Copyright (c) 2008 Samuel Saint-Pettersen]]
+    print 'Octopus web server v0.1.1'
 
     -- if no port is specified, use port 80
     if port == nil then port = 80 end
