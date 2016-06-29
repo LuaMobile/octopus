@@ -9,9 +9,9 @@ mimetypes = require 'mimetypes'
 
 -- detect operating system
 if os.getenv("WinDir") ~= nil then
-        os = "Windows"
+        _ = "Windows"
 else
-        os = "Other OS"  -- !
+        _ = "Other OS"  -- !
 end
 
 -- start web server
