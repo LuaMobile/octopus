@@ -14,10 +14,6 @@ else
         os = "Other OS"  -- !
 end
 
--- load mime configuration file
-mconf = io.open("config/mime.xml", "r")
-if mconf ~= nil then mconf = mconf:read("*all") end
-
 -- start web server
 function main(arg1) 
     port = arg1 -- set first argument as port
@@ -27,11 +23,6 @@ function main(arg1)
 
     -- if no port is specified, use port 80
     if port == nil then port = 80 end
-
-    -- display warning message if configuration missing
-    if mconf == nil then
-        print("\nWarning: MIME config file missing")
-    end 
 
     -- create tcp socket on localhost:$port
     server = assert(socket.bind("*", port))
