@@ -24,12 +24,25 @@ function main(arg1)
     -- if no port is specified, use port 80
     if port == nil then port = 80 end
 
-    -- create tcp socket on localhost:$port
-    server = assert(socket.bind("*", port))
+    -- create tcp socket on $hostname:$port
+    server = assert(socket.tcp())
+    hostname = server:getsockname()
+    assert(server:bind(hostname, port))
+    if not server
+    then
+      print(("Failed to bind to given %s:%s"):format(hostname, port))
+      os.exit(1)
+    end
 
     -- display message to web server is running
-    print("\nRunning on localhost:" .. port)
+    print(("\nRunning on %s:%s"):format(hostname, port))
+
+    -- max connections to queue before start rejecting connections
+    server:listen(100)
+
     waitReceive() -- begin waiting for client requests
+
+    server:close() -- close server
 end
 -- wait for and receive client requests
 function waitReceive()
