@@ -7,7 +7,7 @@
 
 -- load required modules
 socket = require("socket")
-xmlp = require("xml.parser")
+mimetypes = require 'mimetypes'
 
 -- detect operating system
 if os.getenv("WinDir") ~= nil then
@@ -78,7 +78,7 @@ function serve(request)
         
     -- retrieve mime type for file based on extension
     local ext = string.match(file, "%\.%l%l%l%l?")
-    local mime = getMime(ext)
+    local mime = mimetypes.getMime(ext)
 
     -- reply with a response, which includes relevant mime type
     if mime ~= nil then
@@ -87,7 +87,7 @@ function serve(request)
     end
 
     -- determine if file is in binary or ASCII format
-    local binary = isBinary(mime)
+    local binary = mimetypes.isBinary(mime)
 
     -- load requested file in browser
     local served, flags
@@ -112,30 +112,6 @@ function serve(request)
     -- done with client, close request
     client:close()
 end
--- determine mime type based on file extension
-function getMime(ext)
-    local i = 1
-    local exts = xmlp.ctag(mconf, "file")
-    while i < exts do
-        local v = xmlp.vatt(mconf, "file", "ext", i)
-        if v == ext then
-            return xmlp.vtag(mconf, "mime", i)
-        end
-        i = i + 1
-    end
-end
--- determine if file is binary - true or false
-function isBinary(mime)
-    local i = 1
-    local types = xmlp.ctag(mconf, "mime")
-    while i < types do
-        local v = xmlp.vtag(mconf, "mime", i)
-        if v == mime then
-            return xmlp.vtag(mconf, "bin", i)
-        end
-        i = i + 1
-    end
-end     
 -- display error message and server information
 function err(message)
     client:send(message)
