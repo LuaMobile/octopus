@@ -30,8 +30,4 @@ Files served by the server should be placed in folder docroot
 
 ## Stop
 
-1. Open up a shell prompt
-2. Navigate to directory containing octopus.lua
-3. Run "telin" script followed by port number. Example: "telin 80" or
-   "./telin.sh 80" if you ran the server on port 80
-4. Type "kill" and hit return
+1. Just press Ctrl + C in the shell running Octopus.
