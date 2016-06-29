@@ -27,10 +27,9 @@ function main(arg1)
     -- create tcp socket on $hostname:$port
     server = assert(socket.tcp())
     hostname = server:getsockname()
-    assert(server:bind(hostname, port))
-    if not server
-    then
-      print(("Failed to bind to given %s:%s"):format(hostname, port))
+    local status, err = server:bind(hostname, port)
+    if err then
+      print(("Failed to bind to given %s:%s. \nERROR: %s"):format(hostname, port, err))
       os.exit(1)
     end
 
