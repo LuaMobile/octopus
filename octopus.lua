@@ -2,10 +2,12 @@
 -- Octopus web server
 -- Version 0.1.1
 -----------------------------------------------------
+local _M = {}
+local server, client
 
 -- load required modules
-socket = require("socket")
-mimetypes = require 'mimetypes'
+local socket = require("socket")
+local mimetypes = require 'mimetypes'
 
 -- detect operating system
 if os.getenv("WinDir") ~= nil then
@@ -15,8 +17,9 @@ else
 end
 
 -- start web server
-function main(arg1) 
-  port = arg1 -- set first argument as port
+function _M.start(arg1)
+  local hostname
+  local port = arg1 -- set first argument as port
 
   -- display initial program information
   print 'Octopus web server v0.1.1'
@@ -29,7 +32,7 @@ function main(arg1)
   hostname = server:getsockname()
   local status, err = server:bind(hostname, port)
   if err then
-    print(("Failed to bind to given %s:%s. \nERROR: %s"):format(hostname, port, err))
+    print(("Failed to bind to %s:%s. \nERROR: %s"):format(hostname, port, err))
     os.exit(1)
   end
 
@@ -121,6 +124,4 @@ function err(message)
   -- ...
 end
 
--- invoke program starting point:
--- parameter is command-line argument for port number
-main(arg[1])
+return _M

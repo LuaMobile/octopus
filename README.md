@@ -16,7 +16,7 @@ written in the Lua programming language, compatible with Lua 5.1.
 
 1. Open up a shell prompt
 2. Navigate to directory containing octopus.lua
-3. Run: $ lua5.1 octopus.lua
+3. Run: $ lua5.1 example.server_http.lua start
 
 Make sure that the Lua intepreter is in your PATH
 or you will have to type the full path to the Lua interpeter
