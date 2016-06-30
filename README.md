@@ -27,7 +27,8 @@ a web browser with http://localhost
 
 Files served by the server should be placed in folder docroot
 
-
 ## Stop
 
-1. Just press Ctrl + C in the shell running Octopus.
+1. Open up a shell prompt
+2. Navigate to directory containing octopus.lua
+3. Run: $ lua5.1 example.server_http.lua stop

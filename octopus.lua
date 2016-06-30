@@ -47,6 +47,27 @@ function _M.start(arg1)
   server:close() -- close server
 end
 
+-- stop web server
+function _M.stop(arg1)
+  local hostname
+  local port = arg1
+
+  -- create tcp client for $hostname:$port
+  client = assert(socket.tcp())
+  hostname = client:getsockname()
+  local status, err = client:connect(hostname, port)
+  if err then
+    print(("Failed to connect to %s:%s. \nERROR: %s"):format(hostname, port, err))
+    os.exit(1)
+  end
+
+  print(("\nStopping server at %s:%s"):format(hostname, port))
+
+  -- Send KILL signal
+  client:send "KILL\n"
+  client:close()
+end
+
 -- wait for and receive client requests
 function waitReceive()
   -- loop while waiting for a client request
@@ -57,10 +78,10 @@ function waitReceive()
     client:settimeout(60)
     -- receive request from client
     local request, err = client:receive()
-    -- if there's no error, begin serving content or kill server
+    -- if there's no error, begin serving content or KILL server
     if not err then
-      -- if request is kill (via telnet), stop the server
-      if request == "kill" then
+      -- if request is KILL (via telnet), stop the server
+      if request == "KILL" then
         client:send("Octopus has stopped\n")
         print("Stopped")
         break
