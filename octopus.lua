@@ -52,6 +52,9 @@ function _M.stop(arg1)
   local hostname
   local port = arg1
 
+  -- if no port is specified, use port 80
+  if port == nil then port = 80 end
+
   -- create tcp client for $hostname:$port
   client = assert(socket.tcp())
   hostname = client:getsockname()
