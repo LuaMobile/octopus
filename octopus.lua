@@ -168,7 +168,14 @@ function waitReceive()
     -- set timeout - 1 minute.
     client:settimeout(60)
     -- receive request from client
-    local request, err = client:receive()
+    local request
+    local request_text, err = _M.receive_request(client)
+
+    if not err then
+      -- parse request
+      request = _M.parse_request(request_text)
+    end
+
     -- if there's no error, begin serving content or KILL server
     if not err then
       -- if request is KILL (via telnet), stop the server
@@ -209,11 +216,19 @@ end
 
 -- serve requested content
 function serve(request)
-  -- resolve requested file from client request
-  local file = string.match(request, "%w+%\/?.?%l+")
+  local file = request.uri
+
   -- if no file mentioned in request, assume root file is index.html.
-  if file == nil then
-    file = "index.html"
+  if empty(file) then
+    file = 'index.html'
+  end
+
+  filepath = 'docroot/' .. file
+
+  -- check file exists
+  if not os.rename(filepath, filepath) then
+    _M.error404(request.url)
+    return
   end
 
   -- retrieve mime type for file based on extension
@@ -239,7 +254,7 @@ function serve(request)
     -- files differently to plain text such as Windows
     flags = "rb"
   end
-  served = io.open("docroot/" .. file, flags)
+  served = io.open(filepath, flags)
   if served ~= nil then
     local content = served:read("*all")
     client:send(content)
