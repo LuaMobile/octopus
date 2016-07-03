@@ -28,11 +28,11 @@ tested on Android only.
 
 1. Open up a shell prompt
 2. Navigate to directory containing octopus.lua
-3. Run: $ lua5.1 example.server_http.lua start
+3. Run: $ luajit example.server_http.lua start
 
 Make sure that the Lua intepreter is in your PATH
 or you will have to type the full path to the Lua interpeter
-e.g. /path/to/lua5.1 octopus.lua
+e.g. /path/to/luajit octopus.lua
 
 The server runs by default on port 80 and can be accessed in
 a web browser with http://localhost
@@ -43,7 +43,7 @@ Files served by the server should be placed in folder docroot
 
 1. Open up a shell prompt
 2. Navigate to directory containing octopus.lua
-3. Run: $ lua5.1 example.server_http.lua stop
+3. Run: $ luajit example.server_http.lua stop
 
 ## Credits
 
