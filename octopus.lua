@@ -7,7 +7,12 @@ local server, client
 
 -- load required modules
 local socket = require("socket")
+socket.url = require 'socket.url'
+local seawolf = require 'seawolf'.__build('text', 'variable')
 local mimetypes = require 'mimetypes'
+
+local explode, unescape = seawolf.text.explode, socket.url.unescape
+local empty = seawolf.variable.empty
 
 -- detect operating system
 if os.getenv("WinDir") ~= nil then
@@ -83,6 +88,24 @@ function _M.receive_request(client)
     end
   until not line or line:len() == 0 or err
   return table.concat(buffer, "\r\n"), err
+end
+
+function _M.parse_query_string(query_string)
+  local parsed = {}
+  local list = explode('&', query_string or '')
+  if list then
+    local tmp, key, value
+    for _, v in pairs(list) do
+      if #v > 0 then
+        tmp = explode('=', v)
+        key = unescape((tmp[1] or ''):gsub('+', ' '))
+        value = unescape((tmp[2] or ''):gsub('+', ' '))
+        parsed[key] = value
+      end
+    end
+  end
+
+  return parsed
 end
 
 -- Adapted from danielrempel's ladleutil.lua
