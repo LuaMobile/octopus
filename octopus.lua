@@ -106,8 +106,7 @@ function serve(request)
   end
 
   -- retrieve mime type for file based on extension
-  local ext = string.match(file, "%\.%l%l%l%l?")
-  local mime = mimetypes.getMime(ext)
+  local mime = mimetypes.guess(file)
 
   -- reply with a response, which includes relevant mime type
   if mime ~= nil then
@@ -116,7 +115,7 @@ function serve(request)
   end
 
   -- determine if file is in binary or ASCII format
-  local binary = mimetypes.isBinary(mime)
+  local binary = mimetypes.is_binary(filepath)
 
   -- load requested file in browser
   local served, flags
@@ -140,6 +139,30 @@ function serve(request)
 
   -- done with client, close request
   client:close()
+end
+
+-- Adapted from: http://code.interfaceware.com/code?file=mime.lua&format=view
+-- Given a filespec, open it up and see if it is a
+-- "binary" file or not. This is a best guess.
+-- Tweak the pattern to suit.
+function mimetypes.is_binary(filename)
+  local input = assert(io.open(filename, "rb"))
+
+  local isbin = false
+  local chunk_size = 2^12 -- 4k bytes
+
+  repeat
+    local chunk = input.read(input, chunk_size)
+    if not chunk then break end
+
+    if (string.find(chunk, "[^\f\n\r\t\032-\128]")) then
+      isbin = true
+      break
+    end
+  until false
+  input:close()
+
+  return isbin
 end
 
 -- display error message and server information

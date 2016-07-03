@@ -19,6 +19,5 @@ build = {
   type = 'builtin',
   modules = {
     ['octopus'] = 'octopus.lua',
-    ['mimetypes'] = 'mimetypes.lua',
   },
 }
