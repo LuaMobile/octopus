@@ -192,15 +192,27 @@ function waitReceive()
 end
 
 function _M.error404(URL)
-  content = [[<!DOCTYPE html>
+  content = ([[<!DOCTYPE html>
 <html><head>
 <title>404 Not Found</title>
+<style>
+.url {
+  background-color: gray;
+  padding: 0 0.5em 0 0.5em;
+}
+body {
+  background-color: black;
+}
+* {
+  color: white;
+}
+</style>
 </head><body>
 <h1>Not Found</h1>
-<p>The requested URL ]] .. URL .. [[ was not found on this server.</p>
+<p>The requested URL <span class="url">%s</span> was not found on this server.</p>
 <hr />
 <p><i>Octopus web server</i></p>
-</body></html>]]
+</body></html>]]):format(URL)
 
   client:send [[HTTP/1.1 404 Not Found
 Server: Octopus
