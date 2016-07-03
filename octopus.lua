@@ -71,6 +71,71 @@ function _M.stop(arg1)
   client:close()
 end
 
+-- Adapted from danielrempel's ladleutil.lua
+function _M.receive_request(client)
+  local buffer = {}
+  local line, err = ''
+  repeat
+    local line, err = client:receive('*l')
+    if line
+    then
+      rawset(buffer, #buffer + 1, line)
+    end
+  until not line or line:len() == 0 or err
+  return table.concat(buffer, "\r\n"), err
+end
+
+-- Adapted from danielrempel's ladleutil.lua
+function _M.parse_request(request)
+  local request_table = {}
+  local request_text = request
+
+  local line = ""
+
+  local a,b = request_text:find("\r*\n")
+  if not a or not b
+  then
+    print 'Suspicious request:'
+    print(request)
+    print '======================================================='
+    print 'Newlines (\\r\\n) not found'
+
+    return {}
+  end
+
+  repeat
+    local a,b = request_text:find("\r*\n")
+    line = request_text:sub(0,a-1)
+    request_text = request_text:sub(b+1)
+  until line:len() > 0
+
+  request_table.method, request_table.url, request_table.protocol = line:match("^([^ ]-) +([^ ]-) +([^ ]-)$")
+
+  while request_text:len() > 0 do
+    local a,b = request_text:find("\r*\n")
+    local line = request_text:sub(0,a-1)
+    request_text = request_text:sub(b+1)
+
+    if line:len()>0
+    then
+      local key, value = line:match("^([^:]*): +(.+)$")
+      request_table[key] = value
+    end
+  end
+
+  local query_string = (request_table.url):match("^/[^?]*%??(.*)$") or ""
+  query_string = unescape(query_string)
+
+  local uri = (request_table.url):match("^/([^?]*)%??.*$") or ""
+
+  request_table.query_string = query_string
+  request_table.query = _M.parse_query_string(query_string)
+  request_table.uri = uri
+
+  return request_table
+end
+
+
 -- wait for and receive client requests
 function waitReceive()
   -- loop while waiting for a client request
