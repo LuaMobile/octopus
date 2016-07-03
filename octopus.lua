@@ -184,6 +184,29 @@ function waitReceive()
   end
 end
 
+function _M.error404(URL)
+  content = [[<!DOCTYPE html>
+<html><head>
+<title>404 Not Found</title>
+</head><body>
+<h1>Not Found</h1>
+<p>The requested URL ]] .. URL .. [[ was not found on this server.</p>
+<hr />
+<p><i>Octopus web server</i></p>
+</body></html>]]
+
+  client:send [[HTTP/1.1 404 Not Found
+Server: Octopus
+Content-Length: ]]; client:send(content:len()); client:send [[
+Connection: close
+Content-Type: text/html; charset=utf8
+
+]];
+  client:send(content)
+  client:close()
+  err("Not found!")
+end
+
 -- serve requested content
 function serve(request)
   -- resolve requested file from client request
