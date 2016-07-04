@@ -8,7 +8,7 @@ local server, client
 -- load required modules
 local socket = require("socket")
 socket.url = require 'socket.url'
-local seawolf = require 'seawolf'.__build('text', 'variable')
+local seawolf = require 'seawolf'.__build('text', 'variable', 'fs')
 local mimetypes = require 'mimetypes'
 
 local explode, unescape = seawolf.text.explode, socket.url.unescape
@@ -22,9 +22,10 @@ else
 end
 
 -- start web server
-function _M.start(arg1)
+function _M.start(arg1, arg2)
   local hostname
-  local port = arg1 -- set first argument as port
+  local port = arg1
+  local docroot = empty(arg2) and "docroot/" or seawolf.text.rtrim(arg2, "/") .. "/"
 
   -- display initial program information
   print 'Octopus web server v0.1.1'
@@ -47,7 +48,7 @@ function _M.start(arg1)
   -- max connections to queue before start rejecting connections
   server:listen(100)
 
-  waitReceive() -- begin waiting for client requests
+  waitReceive(docroot) -- begin waiting for client requests
 
   server:close() -- close server
 end
@@ -160,7 +161,7 @@ end
 
 
 -- wait for and receive client requests
-function waitReceive()
+function waitReceive(docroot)
   -- loop while waiting for a client request
   while 1 do
     -- accept a client request
@@ -185,7 +186,7 @@ function waitReceive()
         break
       else
         -- begin serving content
-        serve(request)
+        serve(request, docroot)
       end
     end
   end
@@ -227,7 +228,7 @@ Content-Type: text/html; charset=utf8
 end
 
 -- serve requested content
-function serve(request)
+function serve(request, docroot)
   local file = request.uri
 
   -- if no file mentioned in request, assume root file is index.html.
@@ -235,7 +236,7 @@ function serve(request)
     file = 'index.html'
   end
 
-  filepath = 'docroot/' .. file
+  filepath = docroot .. file
 
   -- check file exists
   if not os.rename(filepath, filepath) then
