@@ -1,18 +1,22 @@
 body {
-    font-family: verdana;
-    font-size: 12px;
+  font-family: verdana;
+  font-size: 1em;
 }
 #links {
-    padding: 5px;
+  padding: 5px;
 }
 a {
-    color: #000080;
-    text-decoration: none;
+  color: #000080;
+  text-decoration: none;
 }
 a:hover {
-    background-color: #E0E0FF;
-    text-decoration: none;
+  background-color: #E0E0FF;
+  text-decoration: none;
 }
 a:visited {
-    color: #000080;
+  color: #000080;
+}
+
+#footer {
+  font-size: 0.8em;
 }
