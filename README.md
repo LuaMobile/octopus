@@ -20,6 +20,7 @@ tested on Android only.
 
 * Luajit (recommended) or Lua 5.1
 * LuaSocket 2.0.2+
+* Seawolf
 
 
 # How to start/stop Octopus web server
