@@ -18,10 +18,10 @@ tested on Android only.
 
 # Dependencies
 
-* Luajit (recommended) or Lua 5.1
-* LuaSocket 2.0.2+
-* Seawolf
-
+* [LuaJIT](http://luajit.org/) (recommended) or Lua 5.1
+* [LuaSocket](https://luarocks.org/modules/luarocks/luasocket) 2.0.2+
+* [Seawolf](https://luarocks.org/modules/develcuy/seawolf)
+* [Mimetypes](https://luarocks.org/modules/luarocks/mimetypes)
 
 # How to start/stop Octopus web server
 
