@@ -143,14 +143,16 @@ function _M.parse_request(request)
     if line:len()>0
     then
       local key, value = line:match("^([^:]*): +(.+)$")
-      request_table[key] = value
+      if key then
+        request_table[key] = value
+      end
     end
   end
 
-  local query_string = (request_table.url):match("^/[^?]*%??(.*)$") or ""
+  local query_string = (request_table.url or ""):match("^/[^?]*%??(.*)$") or ""
   query_string = unescape(query_string)
 
-  local uri = (request_table.url):match("^/([^?]*)%??.*$") or ""
+  local uri = (request_table.url or ""):match("^/([^?]*)%??.*$") or ""
 
   request_table.query_string = query_string
   request_table.query = _M.parse_query_string(query_string)
