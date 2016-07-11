@@ -21,29 +21,33 @@ else
   _ = "Other OS" -- !
 end
 
--- start web server
-function _M.start(arg1, arg2)
+-- Bind to a TCP port on all local interfaces
+function _M.bind(port)
   local hostname
-  local port = arg1
-  local docroot = empty(arg2) and "docroot/" or seawolf.text.rtrim(arg2, "/") .. "/"
 
   -- display initial program information
   print 'Octopus web server v0.1.1'
 
-  -- if no port is specified, use port 80
-  if port == nil then port = 80 end
+  -- if no port is specified, use ephemeral port
+  if port == nil then port = 0 end
 
   -- create tcp socket on $hostname:$port
   server = assert(socket.tcp())
-  hostname = server:getsockname()
-  local status, err = server:bind(hostname, port)
+  local status, err = server:bind('*', port)
   if err then
     print(("Failed to bind to %s:%s. \nERROR: %s"):format(hostname, port, err))
     os.exit(1)
   end
 
-  -- display message to web server is running
-  print(("\nRunning on %s:%s"):format(hostname, port))
+  hostname, port = server:getsockname()
+
+  return hostname, port
+end
+
+-- Attach to document root and start listening to incoming connections
+-- Make sure you called bind() previously.
+function _M.attach(docroot)
+  docroot = empty(docroot) and "docroot/" or seawolf.text.rtrim(docroot, "/") .. "/"
 
   -- max connections to queue before start rejecting connections
   server:listen(100)
@@ -51,6 +55,16 @@ function _M.start(arg1, arg2)
   waitReceive(docroot) -- begin waiting for client requests
 
   server:close() -- close server
+end
+
+-- start web server
+function _M.start(arg1, arg2)
+  local hostname, port = _M.bind(arg1)
+
+  -- display message to web server is running
+  print(("\nRunning on %s:%s"):format(hostname, port))
+
+  local docroot = _M.attach(arg2)
 end
 
 -- stop web server
