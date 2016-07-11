@@ -182,7 +182,7 @@ function waitReceive(docroot)
     -- if there's no error, begin serving content or KILL server
     if not err then
       -- if request is KILL (via telnet), stop the server
-      if request == "KILL" then
+      if request_text == "KILL" then
         client:send("Octopus has stopped\n")
         print("Stopped")
         break
