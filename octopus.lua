@@ -225,52 +225,71 @@ end
 
 -- serve requested content
 function serve(request, docroot)
-  local file = request.uri
+  local filepath, location_type, mime, content
+  local location = request.uri
 
-  -- if no file mentioned in request, assume root file is index.html.
-  if empty(file) then
-    file = 'index.html'
+  -- if no location is set in request, assume root location is index.html.
+  if empty(location) then
+    location = 'index.html'
   end
 
-  filepath = docroot .. file
+  filepath = docroot .. location
 
-  -- check file exists
-  if not os.rename(filepath, filepath) then
+  -- check whether location is a file or a callback
+  if os.rename(filepath, filepath) then
+    location_type = 'file'
+      -- retrieve mime type for file based on extension
+    mime = mimetypes.guess(file)
+  elseif locations[request.uri] then
+    location_type = 'callback'
+    mime = locations[request.uri].mime
+  else
     _M.error404(request.url)
     return
   end
 
-  -- retrieve mime type for file based on extension
-  local mime = mimetypes.guess(file)
-
   -- reply with a response, which includes relevant mime type
+  if location_type == 'callback' then
+    -- Get content provided by callback
+    content = locations[request.uri].callback(request) or ''
+  elseif location_type == 'file' then
+    -- determine if file is in binary or ASCII format
+    local binary = mimetypes.is_binary(filepath)
+
+    -- load requested file in browser
+    local served, flags
+    if binary == false then
+      -- if file is ASCII, use just read flag
+      flags = "r"
+    else
+      -- otherwise file is binary, so also use binary flag (b)
+      -- note: this is for operating systems which read binary
+      -- files differently to plain text such as Windows
+      flags = "rb"
+    end
+    served = io.open(filepath, flags)
+    if served ~= nil then
+      -- Get file contents
+      content = served:read("*all")
+    else
+      -- display not found error
+      _M.error404(request.url)
+    end
+  end
+
+  local headers = ([[HTTP/1.1 200/OK
+Server: Octopus
+Content-Length: %s
+Connection: close
+]]):format(content:len())
+
   if mime ~= nil then
-    client:send("HTTP/1.1 200/OK\r\nServer: Octopus\r\n")
-    client:send("Content-Type:" .. mime .. "\r\n\r\n")
+    headers = headers .. 'Content-Type:' .. mime .. "\n"
   end
 
-  -- determine if file is in binary or ASCII format
-  local binary = mimetypes.is_binary(filepath)
-
-  -- load requested file in browser
-  local served, flags
-  if binary == false then
-    -- if file is ASCII, use just read flag
-    flags = "r"
-  else
-    -- otherwise file is binary, so also use binary flag (b)
-    -- note: this is for operating systems which read binary
-    -- files differently to plain text such as Windows
-    flags = "rb"
-  end
-  served = io.open(filepath, flags)
-  if served ~= nil then
-    local content = served:read("*all")
-    client:send(content)
-  else
-    -- display not found error
-    err("Not found!")
-  end
+  client:send(headers)
+  client:send "\n\n"
+  client:send(content)
 
   -- done with client, close request
   client:close()
