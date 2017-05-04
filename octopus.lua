@@ -209,38 +209,8 @@ function waitReceive(docroot)
 end
 
 function _M.error404(URL)
-  content = ([[<!DOCTYPE html>
-<html><head>
-<title>404 Not Found</title>
-<style>
-.url {
-  background-color: gray;
-  padding: 0 0.5em 0 0.5em;
-}
-body {
-  background-color: black;
-}
-* {
-  color: white;
-}
-</style>
-</head><body>
-<h1>Not Found</h1>
-<p>The requested URL <span class="url">%s</span> was not found on this server.</p>
-<hr />
-<p><i>Octopus web server</i></p>
-</body></html>]]):format(URL)
-
-  client:send [[HTTP/1.1 404 Not Found
-Server: Octopus
-Content-Length: ]]; client:send(content:len()); client:send [[
-Connection: close
-Content-Type: text/html; charset=utf8
-
-]];
-  client:send(content)
-  client:close()
-  err("Not found!")
+  _M.errorPage('404 Not Found', '404 Not Found', ([[<h1>Not Found</h1>
+<p>The requested URL <span class="url">%s</span> was not found on this server.</p>]]):format(URL or ''))
 end
 
 -- serve requested content
@@ -321,9 +291,44 @@ function mimetypes.is_binary(filename)
 end
 
 -- display error message and server information
-function err(message)
-  client:send(message)
-  -- ...
+function _M.errorPage(error_code, title, message)
+  title = title or 'Unknown error!'
+  message = message or title
+  error_code = error_code or '500'
+
+  local content = ([[<!DOCTYPE html>
+<html><head>
+<title>%s</title>
+<style>
+.url {
+  background-color: gray;
+  padding: 0 0.5em 0 0.5em;
+}
+body {
+  background-color: black;
+}
+* {
+  color: white;
+}
+</style>
+</head><body>
+%s
+<hr />
+<p><i>Octopus web server</i></p>
+</body></html>]]):format(title, message)
+
+  local headers = ([[HTTP/1.1 %s
+Server: Octopus
+Content-Length: %s
+Content-Type: text/html; charset=utf8
+Connection: close
+
+]]):format(error_code, content:len())
+
+  client:send(headers)
+  client:send(content)
+
+  client:close()
 end
 
 return _M
