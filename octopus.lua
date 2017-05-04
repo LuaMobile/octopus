@@ -4,6 +4,7 @@
 -----------------------------------------------------
 local _M = {}
 local server, client
+local locations = {}
 
 -- load required modules
 local socket = require("socket")
@@ -175,6 +176,15 @@ function _M.parse_request(request)
   return request_table
 end
 
+-- Attach given callback to a desired uri
+function _M.location(uri, callback, mime)
+  if type(callback) == 'function' and type(uri) == 'string' then
+    locations[uri] = {callback = callback, mime = 'text/html; charset=utf-8' or mime}
+  else
+    print(("ERROR: Failed to attach callback to location: %s.\n"):format(uri))
+    os.exit(1)
+  end
+end
 
 -- wait for and receive client requests
 function waitReceive(docroot)
