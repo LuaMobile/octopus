@@ -48,5 +48,5 @@ Files served by the server should be placed in folder docroot
 
 ## Credits
 
-This project started as a fork of Sam(uel) [Saint-Pettersen's ladle](),
+This project started as a fork of Sam(uel) [Saint-Pettersen's ladle](https://github.com/stpettersens/ladle),
 including some improvements backported from [Daniel Rempel's ladle fork](https://github.com/danielrempel/ladle).
