@@ -34,13 +34,15 @@ function _M.bind(port)
 
   -- create tcp socket on $hostname:$port
   server = assert(socket.tcp())
+
+  hostname = server:getsockname()
+
   local status, err = server:bind('*', port)
   if err then
     print(("Failed to bind to %s:%s. \nERROR: %s"):format(hostname, port, err))
     os.exit(1)
   end
 
-  hostname, port = server:getsockname()
 
   return hostname, port
 end
