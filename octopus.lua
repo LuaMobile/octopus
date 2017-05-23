@@ -201,8 +201,13 @@ function waitReceive(docroot)
     local request_text, err = _M.receive_request(client)
 
     if not err then
-      -- parse request
-      request = _M.parse_request(request_text)
+      -- parse request_text
+      xpcall(function()
+        request = _M.parse_request(request_text)
+      end,
+      function ()
+        -- Some error when parsing, just keep going!
+      end)
     end
 
     -- if there's no error, begin serving content or KILL server
