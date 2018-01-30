@@ -297,7 +297,7 @@ Connection: close
   end
 
   client:send(headers)
-  client:send "\n\n"
+  client:send "\n"
   client:send(content)
 
   -- done with client, close request
