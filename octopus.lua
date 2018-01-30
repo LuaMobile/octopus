@@ -181,7 +181,7 @@ end
 -- Attach given callback to a desired uri
 function _M.location(uri, callback, mime)
   if type(callback) == 'function' and type(uri) == 'string' then
-    locations[uri] = {callback = callback, mime = 'text/html; charset=utf-8' or mime}
+    locations[uri] = {callback = callback, mime = mime or [[text/html; charset=utf-8]]}
   else
     print(("ERROR: Failed to attach callback to location: %s.\n"):format(uri))
     os.exit(1)
