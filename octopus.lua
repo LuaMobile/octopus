@@ -259,6 +259,8 @@ function serve(request, docroot)
   if location_type == 'callback' then
     -- Get content provided by callback
     content = locations[request.uri].callback(request) or ''
+    -- Always cast content to string
+    content = [[string]] == type(content) and content or tostring(content)
   elseif location_type == 'file' then
     -- determine if file is in binary or ASCII format
     local binary = mimetypes.is_binary(filepath)
