@@ -175,6 +175,12 @@ function _M.parse_request(request)
   request_table.query = _M.parse_query_string(query_string)
   request_table.uri = uri
 
+  if [[POST]] == request_table.method then
+    request_table.receive = function(...)
+      return client:receive(...)
+    end
+  end
+
   return request_table
 end
 
