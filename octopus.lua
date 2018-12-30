@@ -50,7 +50,9 @@ end
 -- Attach to document root and start listening to incoming connections
 -- Make sure you called bind() previously.
 function _M.attach(docroot)
-  docroot = empty(docroot) and "docroot/" or seawolf.text.rtrim(docroot, "/") .. "/"
+  if false ~= docroot then
+    docroot = empty(docroot) and "docroot/" or seawolf.text.rtrim(docroot, "/") .. "/"
+  end
 
   -- max connections to queue before start rejecting connections
   server:listen(100)
@@ -246,13 +248,16 @@ function serve(request, docroot)
     location = 'index.html'
   end
 
-  filepath = docroot .. location
+  -- Keep filepath empty if docroot is false
+  if false ~= docroot then
+    filepath = docroot .. location
+  end
 
   -- check whether location is a file or a callback
-  if os.rename(filepath, filepath) then
+  if filepath and os.rename(filepath, filepath) then
     location_type = 'file'
       -- retrieve mime type for file based on extension
-    mime = mimetypes.guess(file)
+    mime = mimetypes.guess(filepath)
   elseif locations[request.uri] then
     location_type = 'callback'
     mime = locations[request.uri].mime
